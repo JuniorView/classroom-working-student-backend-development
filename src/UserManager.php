@@ -6,7 +6,10 @@ namespace App;
  * Demonstrates Array functions , closures, and Static methods*/
 class UserManager
 {
-    /** @var UserBase[] */
+    /** @var UserBase[]
+     * Numeric (indexed) Array :
+     * Used here because we have a list of similar objects where the order
+     * is important , but we don't need specific keys to identify them */
     private array $users = [];
 
     public function addUser(UserBase $user): void
@@ -26,9 +29,23 @@ class UserManager
         });
     }
 
-    public function getUserByEmail(): array
+    public function getAllEmail(): array
     {
         return array_map(fn (UserBase $user) => $user->getEmail(), $this->users);
+    }
+
+    // Demonstrates array_map and Associative Arrays
+    public function getUserMap(): array
+    {
+        /*
+         * Associative Array :
+         * Used here to map user names to their emails
+         * Appropriate when you need to look up a value(email) using a specific unique key(name) .*/
+        $map = [];
+        foreach ($this->users as $user) {
+            $map[$user->getName()] = $user->getEmail();
+        }
+        return $map;
     }
 
     // Demonstrate Superglobals simulation
@@ -41,7 +58,7 @@ class UserManager
         if ($name && $email) {
             // security awareness with sanitization
             $cleanName = htmlspecialchars(strip_tags($name));
-            return new CustomerUser($name, $email);
+            return new CustomerUser($cleanName, $email);
         }
         return null;
     }

@@ -17,6 +17,9 @@ abstract class UserBase implements Resettable
     // Static property to count instances
     private static int $userCounter = 0;
 
+    // Private: used for magic __get/__set
+    private array $dynamicData = [];
+
     // Protected properties: accessible by child classes but not from outside
     protected string $name;
     protected string $email;
@@ -47,6 +50,29 @@ abstract class UserBase implements Resettable
     //Basic getters
     public function getName(): string {return $this->name;}
     public function getEmail(): string {return $this->email;}
+
+    // Basic setters
+    public function setName(string $name): void {$this->name = $name;}
+    public function setEmail(string $email): void {$this->email = $email;}
+
+    /**
+     * Magic __set: intercepted when writing to non-existing or inaccessible properties
+     */
+    public function __set(string $key, $value): void
+    {
+        echo "Magic Set: Saving '$value' into '$key'\n";
+        $this->dynamicData[$key] = $value;
+    }
+
+    /**
+     * Magic __get: intercepted when reading non-existing or inaccessible properties
+     */
+    public function __get(string $key)
+    {
+        echo "Magic Get: Accessing '$key'\n";
+        return $this->dynamicData[$key] ?? $this->$key ?? null;
+    }
+
 
     //implementation of Resettable Interface
     public function resetPassword(string $newPassword): void

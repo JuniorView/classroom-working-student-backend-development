@@ -19,24 +19,46 @@ try {
     $manager->addUser($alice);
     $manager->addUser($bob);
     $manager->addUser($charlie);
+    // 1. Demonstrate Trait Usage (Task 2: CanLogin)
+    echo "\n--- Trait Demonstration (CanLogin) ---\n";
 
-    // Demonstrate Magic Methode __toString
-    echo "Created Users: \n";
+    echo "Is Bob logged in? " . ($bob->isLoggedIn() ? 'Yes' : 'No') . "\n";
+
+    echo "Logging Bob in...\n";
+    $bob->login(); // Diese Methode kommt direkt aus dem CanLogin Trait
+
+    echo "Is Bob logged in now? " . ($bob->isLoggedIn() ? 'Yes' : 'No') . "\n";
+
+    // 2. Demonstrate Magic Methode __toString
+    echo "\n--- Created Users: \n";
     echo $alice . "\n";
     echo $bob . "\n";
 
-    // Demonstrate array Functions and closures
-    echo "\nFiltering for customers only: \n";
+    // 3. Demonstrate array Functions and closures
+    echo "\n--- Filtering for customers only: \n";
     $customers = $manager->getUsersByRole(CustomerUser::ROLE_CUSTOMER);
     foreach ($customers as $customer) {
         echo "- " . $customer->getName() . "\n";
     }
 
-    // Demontrate static Property
-    echo "\nTotal users created: " . AdminUser::getUserCounter() . "\n";
+    // 4. using array-map to get all email
+    echo "\n--- All users's emails: \n";
+    $emails = $manager->getAllEmail();
+    foreach ($emails as $email) {
+        echo "- " . $email . "\n";
+    }
+    // 5. Associative array example
+    echo "\n--- Associative Array (Name => Email):\n";
+    $emailMap = $manager->getUserMap();
+    foreach ($emailMap as $name => $email) {
+        echo " $name: $email\n";
+    }
 
-    // 6. Demonstrate Superglobals (Task 10)
-    echo "\nSimulating user creation via \$_POST:\n";
+    // 6. Demontrate static Property
+    echo "\n--- Total users created: " . AdminUser::getUserCounter() . "\n";
+
+    // 7. Demonstrate Superglobals (Task 10)
+    echo "\n--- Simulating user creation via \$_POST:\n";
 
     // Manually injecting data into the superglobal for demonstration purposes
     $_POST['name'] = 'Eve Superglobal';
@@ -47,8 +69,26 @@ try {
     if ($superUser) {
         echo "Successfully created user from \$_POST: " . $superUser->getName() . "\n";
     }
-    //Demonstrate exeption Handling
-    echo "\ntesting Exception handling with invalid email:\n";
+
+    // 8. Demonstrate Visibility & Getters/Setters
+    echo "\n--- Visibility & Getters/Setters ---\n";
+    $bob->setName('Robert'); // Using Public Setter
+    echo "Updated Bob's name via Setter: New name is : " . $bob->getName() . "\n";
+
+    // 10. Demonstrate Magic Methods (__get / __set)
+    echo "\n--- Magic Methods Demonstration ---\n";
+
+    // This property 'nickname' does not exist in the class, so it triggers __set
+    $bob->nickname = "The Bobster";
+
+    // This triggers __get
+    echo "Bob's nickname (via __get): " . $bob->nickname . "\n";
+
+    // Accessing 'role' via __get (since it is protected and not accessible directly)
+    echo "Alice's role (via __get): " . $alice->role . "\n";
+
+    //11. Demonstrate exeption Handling
+    echo "\n--- testing Exception handling with invalid email:\n";
     new CustomerUser('Bad User', 'not-an-email');
 
 
