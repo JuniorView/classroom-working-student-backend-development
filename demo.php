@@ -4,21 +4,27 @@
 use App\CustomerUser;
 use App\UserManager;
 use App\AdminUser;
+use function App\formatUserName; // import trh regular function
 require_once __DIR__ . '/vendor/autoload.php';
 
 echo "PHP Basics Coding Challenge Demo\n";
+
+// Enable assertions for our Unit Test section
+ini_set('zend.assertions', '1');
+assert_options(ASSERT_ACTIVE, 1);
 
 try {
     $manager = new UserManager();
 
     // create Users
-    $alice = new AdminUser('Alice Admin ', 'alice@exemple.com');
+    $alice = new AdminUser('Alice Admin', 'alice@exemple.com');
     $bob = new CustomerUser('Bob Customer', 'bob@exemple.com');
     $charlie = new CustomerUser('Charlie Customer', 'charlie@exemple.com');
 
     $manager->addUser($alice);
     $manager->addUser($bob);
     $manager->addUser($charlie);
+
     // 1. Demonstrate Trait Usage (Task 2: CanLogin)
     echo "\n--- Trait Demonstration (CanLogin) ---\n";
 
@@ -47,6 +53,7 @@ try {
     foreach ($emails as $email) {
         echo "- " . $email . "\n";
     }
+
     // 5. Associative array example
     echo "\n--- Associative Array (Name => Email):\n";
     $emailMap = $manager->getUserMap();
@@ -87,7 +94,23 @@ try {
     // Accessing 'role' via __get (since it is protected and not accessible directly)
     echo "Alice's role (via __get): " . $alice->role . "\n";
 
-    //11. Demonstrate exeption Handling
+
+    // 11. Unit Test Section (Task 11: assert())
+    echo "\n--- Running Internal Unit Tests ---\n";
+
+    // Test 1: Check if Counter works
+    assert(App\UserBase::getUserCounter() > 0, 'User counter should be greater than 0');
+
+    // Test Magic Getter (__get)
+    assert($alice->role === AdminUser::ROLE_ADMIN, 'Magic __get failed');
+
+    // Test Regular Function (Task 7)
+    $formatted = formatUserName($alice);
+    assert($formatted === 'ALICE ADMIN', 'Regular function formatUserName failed');
+
+    echo "All assertions passed successfully!\n";
+
+    //12. Demonstrate exeption Handling
     echo "\n--- testing Exception handling with invalid email:\n";
     new CustomerUser('Bad User', 'not-an-email');
 
