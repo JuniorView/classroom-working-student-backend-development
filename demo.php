@@ -35,6 +35,14 @@ try {
 
     echo "Is Bob logged in now? " . ($bob->isLoggedIn() ? 'Yes' : 'No') . "\n";
 
+    // 1.2. Demonstrate Interface Usage (Task 2: Resettable)
+    echo "\n--- Interface Demonstration (Resettable) ---\n";
+
+    if ($alice instanceof \App\Interfaces\Resettable) {
+        echo "Alice implements the Resettable interface.\n";
+        $alice->resetPassword('new-secure-password-2026');
+    }
+
     // 2. Demonstrate Magic Methode __toString
     echo "\n--- Created Users: \n";
     echo $alice . "\n";

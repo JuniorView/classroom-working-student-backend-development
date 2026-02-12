@@ -24,6 +24,7 @@ abstract class UserBase implements Resettable
     protected string $name;
     protected string $email;
     protected string $role;
+    private string $password = 'initial_secret';
 
     public function __construct(string $name, string $email)
     {
@@ -78,6 +79,7 @@ abstract class UserBase implements Resettable
     public function resetPassword(string $newPassword): void
     {
         //in real app , we could have hsched this passsword
-        echo "Password for {$this->name} has bee reset \n";
+        echo "old password : {$this->password}\n";
+        echo "Password for {$this->name} has been reset to {$newPassword}\n";
     }
 }
